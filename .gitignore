@@ -1,0 +1,12 @@
+*.z64
+ESRGAN/**
+*.config
+__pycache__/**
+actors/**
+levels/**
+text/**
+src/**
+sound/**
+textures/**
+data/**
+include/**

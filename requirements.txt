@@ -1,0 +1,5 @@
+bitstring
+capstone
+Pillow
+pyhull
+pypng
