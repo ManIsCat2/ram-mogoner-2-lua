@@ -4,4 +4,5 @@ edit of rm2c, exports level scripts even if an error occoured and fixes some stu
 
 # More readable levelscripts
 this edit of rm2c also makes it so levelscripts export while being readable too
-![image](https://github.com/user-attachments/assets/c0bfa23b-79f9-46cf-bad2-02a571f5f0a1)
+![image](https://github.com/user-attachments/assets/f262f594-39e0-487f-b553-0e2b0bb00f2e)
+
