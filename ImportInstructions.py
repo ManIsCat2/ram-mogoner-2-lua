@@ -20,15 +20,19 @@ It is expected to have many warnings for editor files and for roms with lots of 
 
 Objects without references must have behaviors created for them, be given an existing behavior, or be commented out.
 
- Level sl Area 1 has object  Bhv_Custom_0x13001c94 with no known label.
- Level sl Area 1 has object  Bhv_Custom_0x13001cc4 with no known label.
- Level sl Area 1 has object  Bhv_Custom_0x13001ce4 with no known label.
- Level sl Area 1 has object  Bhv_Custom_0x13001e34 with no known label.
- Level sl Area 1 has object  Bhv_Custom_0x13001e48 with no known label.
- Level sl Area 1 has object  Bhv_Custom_0x13001eb0 with no known label.
- Level sl Area 1 has object  Bhv_Custom_0x13000bec with no known label.
- Level sl Area 2 has object  Bhv_Custom_0x13001f58 with no known label.
- Level sl Area 3 has object  Bhv_Custom_0x13001d5c with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003cd4 with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003cfc with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003ae8 with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003d10 with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003d24 with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003d54 with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003d78 with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003df0 with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003e10 with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003e28 with no known label.
+ Level rr Area 1 has object  Bhv_Custom_0x13003f44 with no known label.
+ Level rr Area 2 has object  Bhv_Custom_0x13003d8c with no known label.
+ Level rr Area 2 has object  Bhv_Custom_0x13003f64 with no known label.
 
 Known methods of crashing:
 *****************************************************************************

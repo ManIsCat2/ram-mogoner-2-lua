@@ -248,7 +248,7 @@ def ModelWrite(rom,ModelData,nameG,id,tdir,opt,level):
 			Vpos=q[0:3]
 			UV=q[4:6]
 			rgba=q[6:10]
-			V="{{{ %d, %d, %d }, 0, { %d, %d }, { %d, %d, %d, %d}}},"%(*Vpos,*UV,*rgba)
+			V="    {{{ %d, %d, %d }, 0, { %d, %d }, { %d, %d, %d, %d}}},"%(*Vpos,*UV,*rgba)
 			f.write(V+'\n')
 		f.write('};\n\n')
 	for k,md in enumerate(ModelData):

@@ -166,7 +166,7 @@ def GeoParse(rom,start,script,segstart,id,cskybox,CBG,area):
 def GeoWrite(geo,name,id):
 	f=open(name,'w')
 	for k,g in enumerate(geo):
-		f.write('#include "custom.model.inc.h"\nconst GeoLayout Geo_%s[]= {\n'%(id+hex(g[1])))
+		f.write('#include "custom.model.inc.h"\n\nconst GeoLayout %s[]= {\n'%(id+"geo"))
 		for c in g[0]:
 			f.write(c+',\n')
 		f.write('};\n')
@@ -177,7 +177,7 @@ def GeoActWrite(geo,f):
 	geoSymbs = []
 	geoRep = []
 	for k,g in enumerate(geo):
-		f.write('#include "custom.model.inc.h"\nconst GeoLayout %s[]= {\n'%g[1])
+		f.write('#include "custom.model.inc.h"\n\nconst GeoLayout %s[]= {\n'%g[1])
 		for c in g[0]:
 			addr = c.split('(')[-1].split('_')
 			if len(addr)>1:

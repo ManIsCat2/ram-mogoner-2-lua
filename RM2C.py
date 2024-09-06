@@ -593,12 +593,12 @@ def InsertBankLoads(s,f):
 				#custom skybox
 				if b[0]>0x1220000:
 					name = '_%s_skybox_mio0'%('SkyboxCustom%d'%b[0])
-					load = "LOAD_MIO0(0xA,"+name+"SegmentRomStart,"+name+"SegmentRomEnd),\n"
+					load = "	LOAD_MIO0(0xA,"+name+"SegmentRomStart,"+name+"SegmentRomEnd),\n"
 				else:
-					load = "LOAD_MIO0(0xA,"+banks[i]+"SegmentRomStart,"+banks[i]+"SegmentRomEnd),\n"
+					load = "	LOAD_MIO0(0xA,"+banks[i]+"SegmentRomStart,"+banks[i]+"SegmentRomEnd),\n"
 			else:
-				load = "LOAD_MIO0(%d,"%banks[i][1]+banks[i][0]+"_mio0SegmentRomStart,"+banks[i][0]+"_mio0SegmentRomEnd),\n"
-				load += "LOAD_RAW(%d,"%banks[i][2]+banks[i][0]+"_geoSegmentRomStart,"+banks[i][0]+"_geoSegmentRomEnd),\n"
+				load = "	LOAD_MIO0(%d,"%banks[i][1]+banks[i][0]+"_mio0SegmentRomStart,"+banks[i][0]+"_mio0SegmentRomEnd),\n"
+				load += "	LOAD_RAW(%d,"%banks[i][2]+banks[i][0]+"_geoSegmentRomStart,"+banks[i][0]+"_geoSegmentRomEnd),\n"
 			if f:
 				f.write(load)
 	return banks
@@ -662,23 +662,23 @@ def LoadUnspecifiedModels(s,file,level):
 						break
 				else:
 					if model[1]=='geo':
-						file.write(comment+"LOAD_MODEL_FROM_GEO(%d,%s),\n"%(i,lab))
+						file.write(comment+"	LOAD_MODEL_FROM_GEO(%d,%s),\n"%(i,lab))
 					else:
 						#Its just a guess but I think 4 will lead to the least issues
-						file.write(comment+"LOAD_MODEL_FROM_DL(%d,%s,4),\n"%(i,lab))
+						file.write(comment+"	LOAD_MODEL_FROM_DL(%d,%s,4),\n"%(i,lab))
 			elif not (any([lab in l for l in Grouplines])):
 				if model[1]=='geo':
-					file.write(comment+"LOAD_MODEL_FROM_GEO(%d,%s),\n"%(i,lab))
+					file.write(comment+"	LOAD_MODEL_FROM_GEO(%d,%s),\n"%(i,lab))
 				else:
 					#Its just a guess but I think 4 will lead to the least issues
-					file.write(comment+"LOAD_MODEL_FROM_DL(%d,%s,4),\n"%(i,lab))
+					file.write(comment+"	LOAD_MODEL_FROM_DL(%d,%s,4),\n"%(i,lab))
 
 def WriteLevelScript(name,Lnum,s,level,Anum,envfx):
 	f = open(name,'w')
 	f.write(scriptHeader)
 	for a in Anum:
 		f.write('#include "areas/%d/custom.model.inc.h"\n'%a)
-	f.write('#include "levels/%s/header.h"\nextern u8 _%s_segment_ESegmentRomStart[]; \nextern u8 _%s_segment_ESegmentRomEnd[];\n'%(Lnum,Lnum,Lnum))
+	f.write('#include "levels/%s/header.h"\n\nextern u8 _%s_segment_ESegmentRomStart[]; \nextern u8 _%s_segment_ESegmentRomEnd[];\n\n'%(Lnum,Lnum,Lnum))
 	#This is the ideal to match hacks, but currently the way the linker is
 	#setup, level object data is in the same bank as level mesh so this cannot be done.
 	LoadLevel = DetLevelSpecBank(s,f)
@@ -687,16 +687,16 @@ def WriteLevelScript(name,Lnum,s,level,Anum,envfx):
 	f.write('const LevelScript level_%s_entry[] = {\n'%Lnum)
 	s.MakeDec('const LevelScript level_%s_entry[]'%Lnum)
 	#entry stuff
-	f.write("INIT_LEVEL(),\n")
+	f.write("	INIT_LEVEL(),\n")
 	if LoadLevel:
-		f.write("LOAD_MIO0(0x07, _"+LoadLevel+"_segment_7SegmentRomStart, _"+LoadLevel+"_segment_7SegmentRomEnd),\n")
-		f.write("LOAD_RAW(0x1A, _"+LoadLevel+"SegmentRomStart, _"+LoadLevel+"SegmentRomEnd),\n")
-	f.write("LOAD_RAW(0x0E, _"+Lnum+"_segment_ESegmentRomStart, _"+Lnum+"_segment_ESegmentRomEnd),\n")
+		f.write("	LOAD_MIO0(0x07, _"+LoadLevel+"_segment_7SegmentRomStart, _"+LoadLevel+"_segment_7SegmentRomEnd),\n")
+		f.write("	LOAD_RAW(0x1A, _"+LoadLevel+"SegmentRomStart, _"+LoadLevel+"SegmentRomEnd),\n")
+	f.write("	LOAD_RAW(0x0E, _"+Lnum+"_segment_ESegmentRomStart, _"+Lnum+"_segment_ESegmentRomEnd),\n")
 	if envfx:
-		f.write("LOAD_MIO0(        /*seg*/ 0x0B, _effect_mio0SegmentRomStart, _effect_mio0SegmentRomEnd),\n")
+		f.write("	LOAD_MIO0(        /*seg*/ 0x0B, _effect_mio0SegmentRomStart, _effect_mio0SegmentRomEnd),\n")
 	#add in loaded banks
 	banks = InsertBankLoads(s,f)
-	f.write("ALLOC_LEVEL_POOL(),\nMARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),\n")
+	f.write("	ALLOC_LEVEL_POOL(),\n	MARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),\n")
 	if LoadLevel:
 		f.write(LevelSpecificModels[LoadLevel])
 	#Load models that the level uses that are outside groups/level
@@ -704,34 +704,47 @@ def WriteLevelScript(name,Lnum,s,level,Anum,envfx):
 	#add in jumps based on banks returned
 	for b in banks:
 		if type(b)==list and len(b)>2:
-			f.write("JUMP_LINK("+b[3]+"),\n")
+			f.write("	JUMP_LINK("+b[3]+"),\n")
 	#a bearable amount of cringe
 	for a in Anum:
 		id = Lnum+"_"+str(a)+"_"
-		f.write('JUMP_LINK(local_area_%s),\n'%id)
+		f.write('	JUMP_LINK(local_area_%s),\n'%id)
 	#end script
-	f.write("FREE_LEVEL_POOL(),\n")
-	f.write("MARIO_POS({},{},{},{},{}),\n".format(*s.mStart))
-	f.write("CALL(/*arg*/ 0, /*func*/ lvl_init_or_update),\nCALL_LOOP(/*arg*/ 1, /*func*/ lvl_init_or_update),\nCLEAR_LEVEL(),\nSLEEP_BEFORE_EXIT(/*frames*/ 1),\nEXIT(),\n};\n")
+	f.write("	FREE_LEVEL_POOL(),\n")
+	f.write("	MARIO_POS({},{},{},{},{}),\n".format(*s.mStart))
+	f.write("	CALL(/*arg*/ 0, /*func*/ lvl_init_or_update),\n    CALL_LOOP(/*arg*/ 1, /*func*/ lvl_init_or_update),\n    CLEAR_LEVEL(),\n    SLEEP_BEFORE_EXIT(/*frames*/ 1),\n    EXIT(),\n};\n\n")
 	for a in Anum:
 		id = Lnum+"_"+str(a)+"_"
 		area=level[a]
 		WriteArea(f,s,area,a,id)
+
+allTerrainsEnum = {
+	                     
+                        0: "TERRAIN_GRASS",
+                        1: "TERRAIN_STONE",
+                        2: "TERRAIN_SNOW",
+                        3: "TERRAIN_SAND",
+                        4: "TERRAIN_SPOOKY",
+                        5: "TERRAIN_WATER",
+                        6: "TERRAIN_SLIDE",
+                        7: "TERRAIN_MASK"
+                    
+}
 
 def WriteArea(f,s,area,Anum,id):
 	#begin area
 	ascript = "const LevelScript local_area_%s[]"%id
 	f.write(ascript+' = {\n')
 	s.MakeDec(ascript)
-	Gptr='Geo_'+id+hex(area.geo)
-	f.write("AREA(%d,%s),\n"%(Anum,Gptr))
-	f.write("TERRAIN(%s),\n"%("col_"+id+hex(area.col)))
-	f.write("SET_BACKGROUND_MUSIC(0,%d),\n"%area.music)
-	f.write("TERRAIN_TYPE(%d),\n"%(area.terrain))
-	f.write("JUMP_LINK(local_objects_%s),\nJUMP_LINK(local_warps_%s),\n"%(id,id))
+	Gptr=id + "geo"
+	f.write("	AREA(%d,%s),\n"%(Anum,Gptr))
+	f.write("	TERRAIN(%s),\n"%("col_"+id+hex(area.col)))
+	f.write("	SET_BACKGROUND_MUSIC(0,%d),\n"%area.music)
+	f.write("	TERRAIN_TYPE(" + (allTerrainsEnum[int(area.terrain)]) + "),\n")
+	f.write("	JUMP_LINK(local_objects_%s),\n	JUMP_LINK(local_warps_%s),\n"%(id,id))
 	if hasattr(area,'macros'):
 		f.write("MACRO_OBJECTS('local_macro_objects_%s')"%id)
-	f.write("END_AREA(),\nRETURN()\n};\n")
+	f.write("	END_AREA(),\n	RETURN(),\n};\n\n")
 	asobj = 'const LevelScript local_objects_%s[]'%id
 	f.write(asobj+' = {\n')
 	s.MakeDec(asobj)
@@ -748,14 +761,14 @@ def WriteArea(f,s,area,Anum,id):
 				comment='// '
 			else:
 				comment=''
-			f.write(comment+"OBJECT_WITH_ACTS({},{},{},{},{},{},{},{},{},{}),\n".format(*o))
-	f.write("RETURN()\n};\n")
+			f.write(comment+"	OBJECT_WITH_ACTS({}, {}, {}, {}, {}, {}, {}, {},{}, {}),\n".format(*o))
+	f.write("	RETURN(),\n};\n\n")
 	aswarps = 'const LevelScript local_warps_%s[]'%id
 	f.write(aswarps+' = {\n')
 	s.MakeDec(aswarps)
 	#write warps
 	for w in area.warps:
-		f.write("WARP_NODE({},{},{},{},{}),\n".format(*w))
+		f.write("	WARP_NODE({},{},{},{},{}),\n".format(*w))
 	#write macro objects if they exist
 	if hasattr(area,'macros'):
 		asobj = 'const MacroObject local_macro_objects_%s[]'%id
@@ -763,7 +776,7 @@ def WriteArea(f,s,area,Anum,id):
 		for m in area.macros:
 			f.write("MACRO_OBJECT_WITH_BEH_PARAM({},{},{},{},{},{}),\n".format(MacroNames[m[1]],m[0],*m[2:]))
 		f.write("MACRO_OBJECT_END(),\n};")
-	f.write("RETURN()\n};\n")
+	f.write("	RETURN(),\n};\n\n")
 
 def GrabOGDatH(q,rootdir,name):
 	dir = rootdir/'originals'/name
@@ -930,7 +943,7 @@ def WriteLevel(rom,s,num,areas,rootdir,m64dir,AllWaterBoxes,Onlys,romname,m64s,s
 				m64s.append(m64)
 				seqNums.append(seqNum)
 			for g in geo:
-				s.MakeDec("const GeoLayout Geo_%s[]"%(id+hex(g[1])))
+				s.MakeDec("const GeoLayout %s[]"%(id+"geo"))
 		if not OnlySkip:
 			dls = WriteModel(Arom,dls,s,adir,"%s_%d"%(name.upper(),a),id,level)
 			if not dls:
