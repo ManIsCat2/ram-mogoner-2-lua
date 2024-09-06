@@ -434,7 +434,7 @@ def PlaceObject(rom,cmd,start,script):
 	else:
 		bhv=script.GetLabel("{:08x}".format(TcH(arg[18:22])))
 		if bhv in "0x{:08x}".format(TcH(arg[18:22])):
-			bhv = " Bhv_Custom_0x{:08x}".format(TcH(arg[18:22]))
+			bhv = " bhvCustom0x{:08x}".format(TcH(arg[18:22]))
 			Log.UnkObject(script.Currlevel,script.CurrArea,bhv)
 		PO=[id,x,y,z,rx,ry,rz,bparam,bhv,mask]
 		if 'editor_Scroll_Texture' in bhv or 'RM_Scroll_Texture' in bhv:
@@ -593,12 +593,12 @@ def InsertBankLoads(s,f):
 				#custom skybox
 				if b[0]>0x1220000:
 					name = '_%s_skybox_mio0'%('SkyboxCustom%d'%b[0])
-					load = "	LOAD_MIO0(0xA,"+name+"SegmentRomStart,"+name+"SegmentRomEnd),\n"
+					load = "	LOAD_MIO0(0xA, "+name+"SegmentRomStart, "+name+"SegmentRomEnd),\n"
 				else:
-					load = "	LOAD_MIO0(0xA,"+banks[i]+"SegmentRomStart,"+banks[i]+"SegmentRomEnd),\n"
+					load = "	LOAD_MIO0(0xA, "+banks[i]+"SegmentRomStart, "+banks[i]+"SegmentRomEnd),\n"
 			else:
-				load = "	LOAD_MIO0(%d,"%banks[i][1]+banks[i][0]+"_mio0SegmentRomStart,"+banks[i][0]+"_mio0SegmentRomEnd),\n"
-				load += "	LOAD_RAW(%d,"%banks[i][2]+banks[i][0]+"_geoSegmentRomStart,"+banks[i][0]+"_geoSegmentRomEnd),\n"
+				load = "	LOAD_MIO0(%d, "%banks[i][1]+banks[i][0]+"_mio0SegmentRomStart, "+banks[i][0]+"_mio0SegmentRomEnd),\n"
+				load += "	LOAD_RAW(%d, "%banks[i][2]+banks[i][0]+"_geoSegmentRomStart, "+banks[i][0]+"_geoSegmentRomEnd),\n"
 			if f:
 				f.write(load)
 	return banks
@@ -737,9 +737,9 @@ def WriteArea(f,s,area,Anum,id):
 	f.write(ascript+' = {\n')
 	s.MakeDec(ascript)
 	Gptr=id + "geo"
-	f.write("	AREA(%d,%s),\n"%(Anum,Gptr))
-	f.write("	TERRAIN(%s),\n"%("col_"+id+hex(area.col)))
-	f.write("	SET_BACKGROUND_MUSIC(0,%d),\n"%area.music)
+	f.write("	AREA(%d, %s),\n"%(Anum,Gptr))
+	f.write("	TERRAIN(%s),\n"%(id+"collision"))
+	f.write("	SET_BACKGROUND_MUSIC(0, %d),\n"%area.music)
 	f.write("	TERRAIN_TYPE(" + (allTerrainsEnum[int(area.terrain)]) + "),\n")
 	f.write("	JUMP_LINK(local_objects_%s),\n	JUMP_LINK(local_warps_%s),\n"%(id,id))
 	if hasattr(area,'macros'):
@@ -954,7 +954,7 @@ def WriteLevel(rom,s,num,areas,rootdir,m64dir,AllWaterBoxes,Onlys,romname,m64s,s
 		#write collision file
 		if not OnlySkip:
 			ColParse.ColWrite(adir/"custom.collision.inc.c",s,Arom,area.col,id)
-		s.MakeDec('const Collision col_%s[]'%(id+hex(area.col)))
+		s.MakeDec('const Collision %s[]'%(id+"collision"))
 		#write mov tex file
 		if not (ObjectOnly or MusicOnly):
 			#WB = [types][array of type][box data]

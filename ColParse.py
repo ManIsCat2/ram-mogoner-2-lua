@@ -203,7 +203,7 @@ def ColWriteGeneric(name,s,rom,start,id):
 		f = open(name,'a')
 	else:
 		f = open(name,'w')
-	f.write("const Collision col_%s[] = {\nCOL_INIT(),\n"%(id+hex(start)))
+	f.write("const Collision %s[] = {\nCOL_INIT(),\n"%(id+"collision"))
 	b=s.B2P(start)
 	vnum=HalfsU(b+2,1,rom)[0]
 	CD = ColDat(f)

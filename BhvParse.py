@@ -211,7 +211,7 @@ class Behavior():
 		self.NexStart=self.script.B2P(int(args[0])&0X7FFFFFFF)
 		bhv = self.script.GetLabel(addr)
 		if addr in bhv:
-			bhv = " Bhv_Custom_0x{:08x}".format(int(args[0]))
+			bhv = " bhvCustom0x{:08x}".format(int(args[0]))
 		return [bhv]
 	def List(self,args):
 		return [ObjectList[int(args[0])]]
